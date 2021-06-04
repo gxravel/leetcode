@@ -55,6 +55,8 @@ func sumEvenGrandparent(root *TreeNode) int {
 }
 
 func main() {
-	var root = &TreeNode{6, &TreeNode{7, &TreeNode{2, &TreeNode{9, nil, nil}, nil}, &TreeNode{7, &TreeNode{1, nil, nil}, &TreeNode{4, nil, nil}}}, &TreeNode{8, &TreeNode{1, nil, nil}, &TreeNode{3, nil, &TreeNode{5, nil, nil}}}}
-	fmt.Println(sumEvenGrandparent(root))
+	var root = &TreeNode{4, &TreeNode{1, &TreeNode{0, nil, nil}, &TreeNode{2, nil, &TreeNode{3, nil, nil}}}, &TreeNode{6, &TreeNode{5, nil, nil}, &TreeNode{7, nil, &TreeNode{8, nil, nil}}}}
+	var result = bstToGst(root)
+	fmt.Println(result.Val, result.Left.Val, result.Right.Val, result.Right.Left.Val)
+	fmt.Println(root.Val, root.Left.Val, root.Right.Val, root.Right.Left.Val)
 }
