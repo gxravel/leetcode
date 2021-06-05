@@ -9,18 +9,24 @@
 package main
 
 func bstToGst(root *TreeNode) *TreeNode {
-	if root.Right != nil {
-		bstToGst(root.Right)
-		if root.Right.Left != nil {
-			root.Val += root.Right.Left.Val
-		} else {
-			root.Val += root.Right.Val
+	var walk func(*TreeNode, int, bool)
+	walk = func(root *TreeNode, upperRight int, wasLeft bool) {
+		if root.Right != nil {
+			walk(root.Right, upperRight, wasLeft)
+			var r *TreeNode
+			for r = root.Right; r.Left != nil; r = r.Left {
+			}
+			root.Val += r.Val
+		} else if wasLeft {
+			root.Val += upperRight
+		}
+
+		if root.Left != nil {
+			walk(root.Left, root.Val, true)
 		}
 	}
-	if root.Left != nil {
-		bstToGst(root.Left)
-		root.Left.Val += root.Val
-	}
+
+	walk(root, 0, false)
 
 	return root
 }
