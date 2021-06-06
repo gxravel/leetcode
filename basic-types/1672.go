@@ -1,3 +1,5 @@
+package main
+
 func maximumWealth(accounts [][]int) int {
 	var maxWealth int
 	for _, banks := range accounts {

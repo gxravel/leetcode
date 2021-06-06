@@ -1,4 +1,6 @@
 // 1302. Deepest Leaves Sum
+package main
+
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
@@ -33,22 +35,3 @@ func deepestLeavesSum(root *TreeNode) int {
 	deepestLevel := getDeepestLevel(root, 0)
 	return walk(root, 0, deepestLevel)
 }
-
-// -----------------------------------------------
-
-// 1282. Group the People Given the Group Size They Belong To
-func groupThePeople(groupSizes []int) [][]int {
-	var results = make([][]int, 0)
-	var iGroup = make(map[int]int)
-	for man, size := range groupSizes {
-		_, ok := iGroup[size]
-		if !ok || (ok && len(results[iGroup[size]]) == size) {
-			results = append(results, make([]int, 0, size))
-			iGroup[size] = len(results) - 1
-		}
-		results[iGroup[size]] = append(results[iGroup[size]], man)
-	}
-	return results
-}
-
-// ----------------------------------------------
