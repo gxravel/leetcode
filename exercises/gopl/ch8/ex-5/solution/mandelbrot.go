@@ -28,33 +28,41 @@ func main() {
 		px, py int
 		z      complex128
 	}
-	var ch = make(chan res, 100)
-	start := time.Now()
+	worksNum := 4
+	var ch = make(chan res, width)
+	var d = make(chan struct{}, worksNum)
 
 	img := image.NewRGBA(image.Rect(0, 0, width, height))
-	go func() {
-		var result = &res{}
-		for py := 0; py < height; py++ {
-			result.py = py
-			y := float64(py)/height*(ymax-ymin) + ymin
-			for px := 0; px < width; px++ {
-				x := float64(px)/width*(xmax-xmin) + xmin
-				z := complex(x, y)
-				result.z = z
-				result.px = px
-				ch <- *result
+	for w := 0; w < worksNum; w++ {
+		go func() {
+			for c := range ch {
+				img.Set(c.px, c.py, mandelbrot(c.z))
 			}
+			d <- struct{}{}
+		}()
+	}
+	start := time.Now()
+
+	for py := 0; py < height; py++ {
+		r := res{}
+		r.py = py
+		y := float64(py)/height*(ymax-ymin) + ymin
+		for px := 0; px < width; px++ {
+			x := float64(px)/width*(xmax-xmin) + xmin
+			z := complex(x, y)
+			r.px, r.z = px, z
+			ch <- r
 		}
-		close(ch)
-	}()
+	}
+	close(ch)
 	data, err := os.Create("data.png")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer data.Close()
 
-	for res := range ch {
-		img.Set(res.px, res.py, mandelbrot(res.z))
+	for w := 0; w < worksNum; w++ {
+		<-d
 	}
 	png.Encode(data, img) // NOTE: ignoring errors
 	fmt.Println(time.Since(start))
